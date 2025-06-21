@@ -1,0 +1,41 @@
+[project]
+name = "ai-herbal-formula-system"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.13",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.9.1",
+    "uvicorn[standard]>=0.34.3",
+]
+
+[project.scripts]
+dev = "server.main:start"
+
+[build-system]
+requires = ["hatchling", "setuptools>=61.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+# ... existing code ...
+
+[tool.hatch.build.targets.wheel]
+packages = ["server"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.0",
+]
+
+[tool.ruff]
+src = ["server"]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "C90", "N"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
