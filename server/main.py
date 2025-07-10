@@ -2,10 +2,11 @@ import time
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from server.core.config import settings
 from server.core.logger import logger
-from server.routers import items
+from server.routers import health, items
 
 
 @asynccontextmanager
@@ -22,6 +23,27 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 
 
+# Global exception handler for HTTPException
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.warning(
+        f"HTTP exception: {exc.detail} - {request.method} {request.url.path}"
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": exc.detail, "status_code": exc.status_code},
+    )
+
+
+# Global exception handler for unexpected errors
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unexpected error: {str(exc)} - {request.method} {request.url.path}")
+    return JSONResponse(
+        status_code=500, content={"error": "Internal server error", "status_code": 500}
+    )
+
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     start_time = time.time()
@@ -34,12 +56,14 @@ async def log_requests(request: Request, call_next):
     return response
 
 
+# Include routers
 app.include_router(items.router)
+app.include_router(health.router)
 
 
 @app.get("/", tags=["Root"])
 async def root():
-    return {"message": "Welcome to the AI Herbal Formula System"}
+    return {"message": "Welcome to the FastAPI Starter"}
 
 
 def start():

@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "AI Herbal Formula System"
+    APP_NAME: str = "FastAPI Starter"
     ADMIN_EMAIL: str | None = None
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT_JSON: bool = True
