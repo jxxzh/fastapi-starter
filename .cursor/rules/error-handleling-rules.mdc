@@ -10,5 +10,3 @@ globs: **/*.py
   - Use guard clauses to handle preconditions and invalid states early.
   - Implement proper error logging and user-friendly error messages.
   - Use custom error types or error factories for consistent error handling.
-- Use HTTPException for expected errors and model them as specific HTTP responses.
-- Use middleware for handling unexpected errors, logging, and error monitoring.

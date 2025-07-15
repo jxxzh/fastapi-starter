@@ -1,12 +1,13 @@
-import time
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from server.core.config import settings
+from server.core.handlers import api_exception_handler, general_exception_handler
 from server.core.logger import logger
+from server.core.middlewares import LoggingMiddleware, RequestIDMiddleware
 from server.routers import health, items
+from server.schemas.api import APIError
 
 
 @asynccontextmanager
@@ -20,45 +21,23 @@ async def lifespan(app: FastAPI):
     logger.info("Releasing resources...")
 
 
-app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+)
+
+# 添加中间件 - 注意顺序很重要！
+# RequestIDMiddleware 必须在 LoggingMiddleware 之前，因为日志需要 request_id
+app.add_middleware(RequestIDMiddleware)
+app.add_middleware(LoggingMiddleware)
+
+# 添加异常处理器
+app.add_exception_handler(APIError, api_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
 
 
-# Global exception handler for HTTPException
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    logger.warning(
-        f"HTTP exception: {exc.detail} - {request.method} {request.url.path}"
-    )
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"error": exc.detail, "status_code": exc.status_code},
-    )
-
-
-# Global exception handler for unexpected errors
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unexpected error: {str(exc)} - {request.method} {request.url.path}")
-    return JSONResponse(
-        status_code=500, content={"error": "Internal server error", "status_code": 500}
-    )
-
-
-@app.middleware("http")
-async def log_requests(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    logger.info(
-        f"'{request.method} {request.url.path}' "
-        f"{response.status_code} {process_time:.4f}s"
-    )
-    return response
-
-
-# Include routers
-app.include_router(items.router)
-app.include_router(health.router)
+# 添加路由
+app.include_router(health.router, tags=["Health"], prefix="/health")
+app.include_router(items.router, tags=["Items"], prefix="/items")
 
 
 @app.get("/", tags=["Root"])
