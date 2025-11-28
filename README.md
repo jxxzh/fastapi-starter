@@ -23,16 +23,15 @@ fastapi-starter/
 │   │   ├── middlewares/      # 中间件（如 request_id, logging 等）
 │   │   └── decorators/      # 装饰器（如 response_wrapper）
 │   ├── routers/             # API路由模块
-│   │   ├── items.py         # 项目相关路由
-│   │   └── health.py        # 健康检查路由
 │   ├── schemas/             # Pydantic 数据模型
-│   │   └── item.py         # 项目数据模型
 │   └── main.py             # FastAPI 应用入口
 ├── logs/                    # 日志目录
-├── .cursor/                 # Cursor 配置
-│   └── rules/              # 代码规则
 ├── pyproject.toml          # 项目元数据和依赖
 ├── uv.lock                 # 锁定的依赖版本
+├── .env                    # 环境变量
+├── .env.dev                # 开发环境变量
+├── .env.prod               # 生产环境变量
+├── AGENTS.md               # AI 编码代理指南
 └── README.md               # 项目说明文档
 ```
 
@@ -69,7 +68,7 @@ LOG_LEVEL="INFO"
 LOG_FORMAT_JSON=true
 ```
 
-### 3. 运行应用
+### 3. 本地开发
 
 ```bash
 uv run dev
@@ -144,7 +143,7 @@ curl "http://127.0.0.1:8000/items/1"
 
 ### 生产环境运行
 ```bash
-uv run uvicorn server.main:app --host 0.0.0.0 --port 8000
+uv run start
 ```
 
 ### Docker 部署
@@ -159,7 +158,7 @@ RUN pip install uv && uv sync --frozen
 COPY . .
 
 EXPOSE 8000
-CMD ["uv", "run", "uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "start"]
 ```
 
 ## 📚 开发指南
