@@ -1,8 +1,9 @@
+import os
 from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
-from server.core.config import settings
+from server.core.config import reload_settings, settings
 from server.core.handlers import api_exception_handler, general_exception_handler
 from server.core.logger import logger
 from server.core.middlewares import LoggingMiddleware, RequestIDMiddleware
@@ -45,5 +46,15 @@ async def root():
     return {"message": "Welcome to the FastAPI Starter"}
 
 
-def start():
+def dev():
+    """开发环境启动（带热重载）"""
+    os.environ["ENV"] = "dev"
+    reload_settings()  # 重新加载配置以读取 .env.dev 文件
     uvicorn.run("server.main:app", host="0.0.0.0", port=8000, reload=True)
+
+
+def start():
+    """生产环境启动（不带热重载）"""
+    os.environ["ENV"] = "prod"
+    reload_settings()  # 重新加载配置以读取 .env.prod 文件
+    uvicorn.run("server.main:app", host="0.0.0.0", port=8000, reload=False)

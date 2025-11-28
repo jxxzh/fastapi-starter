@@ -13,7 +13,8 @@ dependencies = [
 ]
 
 [project.scripts]
-dev = "server.main:start"
+dev = "server.main:dev"
+start = "server.main:start"
 
 [build-system]
 requires = ["hatchling", "setuptools>=61.0"]
