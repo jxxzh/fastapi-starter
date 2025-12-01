@@ -29,6 +29,7 @@ fastapi-starter/
 ## Vibe Coding指南
 
 - 如果需要更详细的指南，优先按需参考 `/agent-docs` 目录下的相关文档
+- 如果vibe coding过程中需要编写文档，默认输出到 `/agent-docs` 目录下
 
 ## Python 代码风格和原则
 
