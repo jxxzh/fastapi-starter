@@ -19,8 +19,8 @@ fastapi-starter/
 │   ├── routers/                # API 路由模块
 │   ├── schemas/                # Pydantic 数据模型
 │   └── main.py                 # 应用入口
+├── agent_docs/                 # 提供给AI编码智能体的文档集合，AI按需阅读
 ├── logs/                       # 日志目录
-├── agent-docs/                 # 提供给AI编码智能体的文档集合，按需阅读
 ├── .env(.env.dev,.env.prod)    # 环境变量
 ├── pyproject.toml              # 项目配置
 └── README.md                   # 项目说明文档
@@ -28,8 +28,8 @@ fastapi-starter/
 
 ## Vibe Coding指南
 
-- 如果需要更详细的指南，优先按需参考 `/agent-docs` 目录下的相关文档
-- 如果vibe coding过程中需要编写文档，默认输出到 `/agent-docs` 目录下
+- 如果需要更详细的指南，优先按需参考 `/agent_docs` 目录下的相关文档（如果有的话）
+- 如果vibe coding过程中需要新增指南，默认输出到 `/agent_docs` 目录下，并将文件名和描述更新到 `AGENTS.md` 文件的项目结构中
 
 ## Python 代码风格和原则
 
