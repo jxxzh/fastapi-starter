@@ -10,11 +10,13 @@ class Settings(BaseSettings):
 
     def __init__(self, **kwargs):
         env = os.getenv("ENV", "dev")
-        env_file = [".env", f".env.{env}"]
+        env_candidates = [".env", f".env.{env}"]
+        env_files = [path for path in env_candidates if os.path.exists(path)]
         if "model_config" not in kwargs:
-            kwargs["model_config"] = SettingsConfigDict(
-                env_file=env_file, env_file_encoding="utf-8"
-            )
+            if env_files:
+                kwargs["model_config"] = SettingsConfigDict(
+                    env_file=env_files, env_file_encoding="utf-8"
+                )
         super().__init__(**kwargs)
 
 

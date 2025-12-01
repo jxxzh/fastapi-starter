@@ -13,11 +13,9 @@
 ## 项目结构
 
 ```
-fastapi-starter/
 ├── server/                     # 主应用目录
-│   ├── core/                   # 核心基础设施（包括基础配置、日志、异常处理、中间件等等）
-│   ├── routers/                # API 路由模块
-│   ├── schemas/                # Pydantic 数据模型
+│   ├── core/                   # 核心基础设施（配置、日志、中间件、异常处理等）
+│   ├── modules/                # 业务模块（每个模块根据需要内含 router,schema,service等）
 │   └── main.py                 # 应用入口
 ├── agent_docs/                 # 提供给AI编码智能体的文档集合，AI按需阅读
 ├── logs/                       # 日志目录

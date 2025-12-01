@@ -7,8 +7,8 @@ from server.core.config import reload_settings, settings
 from server.core.handlers import api_exception_handler, general_exception_handler
 from server.core.logger import logger
 from server.core.middlewares import LoggingMiddleware, RequestIDMiddleware
-from server.routers import health, items
-from server.schemas.api import APIError
+from server.core.schemas import APIError
+from server.modules import health
 
 
 @asynccontextmanager
@@ -38,7 +38,6 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 # 添加路由
 app.include_router(health.router, tags=["Health"], prefix="/health")
-app.include_router(items.router, tags=["Items"], prefix="/items")
 
 
 @app.get("/", tags=["Root"])

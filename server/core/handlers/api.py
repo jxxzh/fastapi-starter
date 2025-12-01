@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from server.core.logger import logger
-from server.schemas.api import APIError
+from server.core.schemas import APIError
 
 
 async def api_exception_handler(request: Request, exc: APIError) -> JSONResponse:
