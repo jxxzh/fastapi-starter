@@ -40,9 +40,11 @@ fastapi-starter/
 ### 核心原则
 
 - **函数式编程**: 优先使用函数和模块化设计，避免不必要的类
-- **RORO 模式**: 所有函数使用 **Receive an Object, Return an Object** 模式
-- **类型提示**: 所有函数签名必须包含完整的类型提示
+  - 函数设计遵循单一职责原则
+  - 纯函数和不可变数据结构优先，避免副作用
+  - 函数定义时，善用仅限关键字参数（单独的`*`），确保位置参数精简
 - **声明式编程**: 优先使用声明式而非命令式编程风格
+- **类型提示**: 所有函数签名必须包含完整的类型提示
 - **代码复用**: 通过迭代和模块化避免代码重复
 
 ### 命名规范
@@ -56,31 +58,6 @@ fastapi-starter/
 - **使用 Pydantic v2**: 所有数据验证和响应模式使用 Pydantic 的 `BaseModel`
 - **类型安全**: 优先使用 Pydantic 模型而非原始字典进行输入验证
 - **一致性**: 使用 Pydantic 的 BaseModel 确保输入/输出验证和响应模式的一致性
-
-### 示例
-
-```python
-# ✅ 好的实践 - RORO 模式 + 类型提示
-from pydantic import BaseModel
-
-class CreateUserInput(BaseModel):
-    name: str
-    email: str
-    is_active: bool = True
-
-class CreateUserOutput(BaseModel):
-    user_id: int
-    name: str
-    email: str
-
-async def create_user(input: CreateUserInput) -> CreateUserOutput:
-    # 业务逻辑
-    return CreateUserOutput(user_id=1, name=input.name, email=input.email)
-
-# ❌ 避免
-def create_user(name, email):  # 缺少类型提示
-    return {"user_id": 1}  # 使用原始字典
-```
 
 ## FastAPI 应用规则
 
