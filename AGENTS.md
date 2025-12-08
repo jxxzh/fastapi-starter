@@ -1,47 +1,46 @@
-# AGENTS.md
+<!-- OPENSPEC:START -->
+# OpenSpec Instructions
 
-## 项目概述
+These instructions are for AI assistants working in this project.
 
-这是一个基于 FastAPI 的现代化 Python Web 应用，采用渐进式架构设计，使用 uv 作为包管理工具，Pydantic v2 进行数据验证。
+Always open `@/openspec/AGENTS.md` when the request:
+- Mentions planning or proposals (words like proposal, spec, change, plan)
+- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Sounds ambiguous and you need the authoritative spec before coding
 
-## 设置命令
+Use `@/openspec/AGENTS.md` to learn:
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
 
-- **安装依赖**: `uv sync`
-- **启动开发服务器**: `uv run dev` （自动热重载）
-- **生产环境运行**: `uv run prod`
+Keep this managed block so 'openspec update' can refresh the instructions.
 
-## 项目结构
+<!-- OPENSPEC:END -->
 
-```
-├── server/                     # 主应用目录
-│   ├── core/                   # 核心基础设施（配置、日志、中间件、异常处理等）
-│   ├── modules/                # 业务模块（每个模块根据需要内含 router,schema,service等）
-│   └── main.py                 # 应用入口
-├── agent_docs/                 # 提供给AI编码智能体的文档集合，AI按需阅读
-├── logs/                       # 日志目录
-├── .env(.env.dev,.env.prod)    # 环境变量
-├── pyproject.toml              # 项目配置
-└── README.md                   # 项目说明文档
-```
+# AGENTS instructions
 
-## Vibe Coding指南
+## Project Knowledge
 
-- 如果需要更详细的指南，优先按需参考 `/agent_docs` 目录下的相关文档（如果有的话）
-- 如果vibe coding过程中需要新增指南，默认输出到 `/agent_docs` 目录下，并将文件名和描述更新到 `AGENTS.md` 文件的项目结构中
+### Development Environment
+- Use `uv` as the package manager.
+  - dev server: `uv run dev`
+  - prod server: `uv run start`
+- Use `ruff` as the linter and formatter.
+  - lint: `uv run ruff check`
+  - format: `uv run ruff format`
 
-## Python 代码风格和原则
+### Core Stack
+- FastAPI: A modern, fast (high-performance), web framework for building APIs with Python 3.14+
+- Pydantic V2: Data validation and settings management using Python type hints
 
-### 核心原则
+### Project Architecture
 
-- **函数式编程**: 优先使用函数和模块化设计，避免不必要的类
-- **声明式编程**: 优先使用声明式而非命令式编程风格
-- **类型提示**: 所有函数签名必须包含完整的类型提示
-- **代码复用**: 通过迭代和模块化避免代码重复
+### Code Style
+- **Functional Programming**: Prefer functional programming over object-oriented programming
+- **Declarative Programming**: Prefer declarative programming over imperative programming
+- **Type Hints**: All function signatures must include complete type hints
+- **Code Reusability**: Avoid code duplication through iteration and modularization
 
-## FastAPI 应用规则
+## Tips
 
-### 应用结构 (main.py)
-
-- **函数式组件**: 使用纯函数和 Pydantic 模型进行输入验证和响应模式
-- **声明式路由**: 使用清晰的返回类型注解定义路由
-- **异常处理**: 使用 `HTTPException` 处理预期错误，并将其建模为特定的 HTTP 响应
+- Always use context7 when I need code generation, setup or configuration steps, or library/API documentation. This means you should automatically use the Context7 MCP tools to resolve library id and get library docs without me having to explicitly ask.

@@ -25,7 +25,6 @@
 │   │   └── decorators/        # 装饰器（如 response_wrapper 等）
 │   ├── modules/               # 功能模块（每个模块根据需要内含 router,schema,service等）
 │   └── main.py                # 应用入口
-├── agent_docs/                # 提供给AI编码智能体的文档集合，AI按需阅读
 ├── logs/                      # 日志目录
 ├── pyproject.toml             # 项目元数据和依赖
 ├── uv.lock                    # 锁定的依赖版本
