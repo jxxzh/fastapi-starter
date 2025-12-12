@@ -14,7 +14,7 @@
 ## 📁 项目结构
 
 ```
-├── server/                    # 主应用目录
+├── app/                       # 主应用目录
 │   ├── core/                  # 核心基础设施
 │   │   ├── config.py          # 配置管理
 │   │   ├── logger.py          # 日志配置
@@ -37,11 +37,11 @@
 
 ### 目录化的异常、中间件和装饰器
 - 每个功能点单独一个文件，便于维护和扩展
-- 通过 `__init__.py` 统一导出常用内容，外部可直接 `from server.core.schemas import APIError`
+- 通过 `__init__.py` 统一导出常用内容，外部可直接 `from app.core.schemas import APIError`
 - 推荐在 `__init__.py` 中使用 `__all__`，既规范导出又避免 Ruff F401 报错
 
 ```python
-# 例如 server/core/decorators/__init__.py
+# 例如 app/core/decorators/__init__.py
 from .response_wrapper import response_wrapper
 __all__ = ["response_wrapper"]
 ```

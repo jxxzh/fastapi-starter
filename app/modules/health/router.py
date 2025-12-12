@@ -1,5 +1,5 @@
+from app.core.logger import logger
 from fastapi import APIRouter
-from server.core.logger import logger
 
 router = APIRouter(
     prefix="/health",
