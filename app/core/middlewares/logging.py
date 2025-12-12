@@ -1,9 +1,10 @@
 import time
 
-from app.core.logger import logger
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
+
+from app.core.logger import logger
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):
@@ -11,7 +12,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     专门负责请求日志记录的中间件
     """
 
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: RequestResponseEndpoint
+    ) -> Response:
         request_id = getattr(request.state, "request_id", "N/A")
         logger.info(
             f"Request started: {request.method} {request.url.path}",

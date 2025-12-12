@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable
 
 from starlette.requests import Request
 from starlette.responses import Response

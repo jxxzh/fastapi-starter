@@ -1,13 +1,16 @@
-from app.core.logger import logger
-from app.core.schemas import APIError
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
+from app.core.logger import logger
+from app.core.schemas import APIError
 
-async def api_exception_handler(request: Request, exc: APIError) -> JSONResponse:
+
+async def api_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """
     全局 API 异常处理器
     """
+    if not isinstance(exc, APIError):
+        raise exc
     request_id = getattr(request.state, "request_id", "N/A")
     logger.error(
         f"API Exception: {exc.error_type.value} - {exc.message}",

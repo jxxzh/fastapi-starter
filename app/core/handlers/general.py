@@ -1,7 +1,8 @@
-from app.core.logger import logger
-from app.core.schemas import APIErrorType
 from fastapi import Request
 from fastapi.responses import JSONResponse
+
+from app.core.logger import logger
+from app.core.schemas import APIErrorType
 
 
 async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:

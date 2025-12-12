@@ -23,10 +23,10 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 ### Development Environment
 - Use `uv` as the package manager.
-  - dev server: `uv run dev`
-  - prod server: `uv run start`
+  - dev server: `uv run fastapi dev`
+  - prod server: `uv run fastapi start`
 - Use `ruff` as the linter and formatter.
-  - lint: `uv run ruff check`
+  - lint: `uv run ruff check --fix`
   - format: `uv run ruff format`
 
 ### Core Stack
