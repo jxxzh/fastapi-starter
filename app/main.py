@@ -7,7 +7,7 @@ from app.core.handlers import api_exception_handler, general_exception_handler
 from app.core.logger import logger
 from app.core.middlewares import LoggingMiddleware, RequestIDMiddleware
 from app.core.schemas import APIError
-from app.modules import health
+from app.routes import health
 
 
 @asynccontextmanager

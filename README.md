@@ -18,12 +18,12 @@
 │   ├── core/                  # 核心基础设施
 │   │   ├── config.py          # 配置管理
 │   │   ├── logger.py          # 日志配置
-│   │   ├── exceptions/        # 统一异常体系（含 __init__.py, base.py 等）
+│   │   ├── exceptions/        # 异常处理
 │   │   ├── middlewares/       # 中间件（如 request_id, logging 等）
 │   │   ├── handlers/          # 异常处理器（如 general_exception_handler 等）
 │   │   ├── schemas/           # 基础 schema（如 APIResponseModel, APIError 等）
 │   │   └── decorators/        # 装饰器（如 response_wrapper 等）
-│   ├── modules/               # 功能模块（每个模块根据需要内含 router,schema,service等）
+│   ├── routes/                # 路由模块（每个模块根据需要内含 router,schema,service等）
 │   └── main.py                # 应用入口
 ├── logs/                      # 日志目录
 ├── pyproject.toml             # 项目元数据和依赖
@@ -33,17 +33,6 @@
 ├── .env.prod                  # 生产环境变量
 ├── AGENTS.md                  # AI 编码代理指南
 └── README.md                  # 项目说明文档
-```
-
-### 目录化的异常、中间件和装饰器
-- 每个功能点单独一个文件，便于维护和扩展
-- 通过 `__init__.py` 统一导出常用内容，外部可直接 `from app.core.schemas import APIError`
-- 推荐在 `__init__.py` 中使用 `__all__`，既规范导出又避免 Ruff F401 报错
-
-```python
-# 例如 app/core/decorators/__init__.py
-from .response_wrapper import response_wrapper
-__all__ = ["response_wrapper"]
 ```
 
 ## 🛠️ 安装和运行
