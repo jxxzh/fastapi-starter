@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.handlers import api_exception_handler, general_exception_handler
@@ -26,9 +27,19 @@ app = FastAPI(
 )
 
 # 添加中间件 - 注意顺序很重要！
+# cors中间件
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 根据需要调整
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # RequestIDMiddleware 必须在 LoggingMiddleware 之前，因为日志需要 request_id
 app.add_middleware(RequestIDMiddleware)
 app.add_middleware(LoggingMiddleware)
+
 
 # 添加异常处理器
 app.add_exception_handler(APIError, api_exception_handler)
