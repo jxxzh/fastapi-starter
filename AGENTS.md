@@ -40,11 +40,12 @@ Organize code by functionality instead of file types, keeping code highly cohesi
 ```
 ├── app/                       # 主应用目录
 │   ├── core/                  # 核心基础设施
-│   ├── routes/                # 路由模块（每个模块根据需要内含 router,schema,service等）
-│   └── main.py                # 应用入口
+│   ├── api/                   # API 路由
+│   │   ├── routes/            # 路由（按功能组织，每个模块包含 router, schema, service 等）
+│   │   └── main.py            # API 路由入口
+│   └── main.py                # 主应用入口
 ├── logs/                      # 日志目录
 ├── pyproject.toml             # 项目元数据和依赖
-├── uv.lock                    # 锁定的依赖版本
 ├── .env(.dev,.prod)           # 环境变量
 ├── AGENTS.md                  # AI 编码代理指南
 └── README.md                  # 项目说明文档

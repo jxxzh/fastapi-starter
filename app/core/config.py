@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     APP_ENV: Literal["development", "production", "testing"] = "development"
     APP_NAME: str = "FastAPI Starter"
 
+    API_V1_STR: str = "/api/v1"
+
     # logging
     LOG_SAVE_IN_LOCAL_FILE: bool = True
     LOG_REQUEST_BODY: bool = False

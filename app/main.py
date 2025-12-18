@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.handlers import api_exception_handler, general_exception_handler
+from app.api.handlers import api_exception_handler, general_exception_handler
+from app.api.main import api_router
+from app.api.middlewares import LoggingMiddleware, RequestIDMiddleware
+from app.api.schemas.error import APIError
+from app.core.config import settings
 from app.core.logger import setup_logger
-from app.core.middlewares import LoggingMiddleware, RequestIDMiddleware
-from app.core.schemas import APIError
-from app.routes import health
 
 # 初始化日志配置
 setup_logger()
@@ -36,9 +37,4 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 
 # 添加路由
-app.include_router(health.router)
-
-
-@app.get("/", tags=["Root"])
-async def root():
-    return {"message": "Welcome to the FastAPI Starter"}
+app.include_router(api_router, prefix=settings.API_V1_STR)
