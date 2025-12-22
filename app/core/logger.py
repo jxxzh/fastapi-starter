@@ -1,5 +1,6 @@
 import logging
 import sys
+from types import FrameType
 
 from loguru import logger
 
@@ -17,7 +18,7 @@ class InterceptHandler(logging.Handler):
         except ValueError:
             level = record.levelno
 
-        frame = logging.currentframe()
+        frame: FrameType | None = logging.currentframe()
         depth = 2
         while frame and frame.f_code.co_filename in {logging.__file__, __file__}:
             frame = frame.f_back
