@@ -18,10 +18,11 @@ app = FastAPI()
 # cors中间件
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 根据需要调整
+    allow_origins=settings.all_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-Request-ID"],
 )
 
 # 注意：FastAPI/Starlette 中间件是“后添加先执行”（最后 add 的在最外层）。
