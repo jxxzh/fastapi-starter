@@ -46,7 +46,7 @@ Organize code by functionality instead of file types, keeping code highly cohesi
 │   └── main.py                # 主应用入口
 ├── logs/                      # 日志目录
 ├── pyproject.toml             # 项目元数据和依赖
-├── .env(.dev,.prod)           # 环境变量
+├── .env(.development,.production,.testing)           # 环境变量
 ├── AGENTS.md                  # AI 编码代理指南
 └── README.md                  # 项目说明文档
 ```

@@ -1,48 +1,69 @@
 from enum import Enum
 from http import HTTPStatus
 
+from fastapi import HTTPException
+from fastapi.responses import JSONResponse
+
+from app.api.schemas.response import APIResponseModel
+
 
 class APIErrorType(Enum):
     """
     错误类型枚举
     用于规范化和标准化错误类型
+    只在 HTTPStatus 无法满足时使用
     """
 
-    # 客户端错误 (4xx)
-    BAD_REQUEST = "BAD_REQUEST"
-    UNAUTHORIZED = "UNAUTHORIZED"
-    FORBIDDEN = "FORBIDDEN"
-    NOT_FOUND = "NOT_FOUND"
-    CONFLICT = "CONFLICT"
-    VALIDATION_ERROR = "VALIDATION_ERROR"
-    # 服务器错误 (5xx)
-    INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
-    SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
-    DATABASE_ERROR = "DATABASE_ERROR"
-    # 业务错误
-    ITEM_NOT_FOUND = "ITEM_NOT_FOUND"
-    USER_NOT_FOUND = "USER_NOT_FOUND"
-    INVALID_INPUT = "INVALID_INPUT"
-    DUPLICATE_ENTRY = "DUPLICATE_ENTRY"
+    HTTP_STATUS_ERROR = "HTTP_STATUS_ERROR"  # 默认 HTTP 状态码异常
+    VALIDATION_ERROR = "VALIDATION_ERROR"  # 请求参数校验异常
 
 
-class APIError(Exception):
+class APIException(HTTPException):
     """
     API 异常基类
     所有自定义的业务异常都应继承自此类
     """
 
-    status_code: int
-    message: str
+    status_code: HTTPStatus
     error_type: APIErrorType
 
     def __init__(
         self,
-        message: str = HTTPStatus.INTERNAL_SERVER_ERROR.description,
-        status_code: int = HTTPStatus.INTERNAL_SERVER_ERROR.value,
-        error_type: APIErrorType = APIErrorType.INTERNAL_SERVER_ERROR,
+        status_code: HTTPStatus = HTTPStatus.INTERNAL_SERVER_ERROR,
+        detail: str | None = None,
+        error_type: APIErrorType = APIErrorType.HTTP_STATUS_ERROR,
+        headers: dict[str, str] | None = None,
     ):
-        self.message = message
-        self.status_code = status_code
         self.error_type = error_type
-        super().__init__(message)
+        super().__init__(
+            status_code=status_code,
+            detail=detail or status_code.phrase,
+            headers=headers,
+        )
+
+    @classmethod
+    def from_http_exception(cls, exc: HTTPException) -> "APIException":
+        return cls(
+            status_code=HTTPStatus(exc.status_code),
+            detail=exc.detail,
+            error_type=APIErrorType.HTTP_STATUS_ERROR,
+            headers=getattr(exc, "headers", None),
+        )
+
+
+class APIExceptionResponse(JSONResponse):
+    def __init__(
+        self,
+        exc: APIException,
+        request_id: str,
+    ):
+        super().__init__(
+            status_code=exc.status_code,
+            content=APIResponseModel[None](
+                data=None,
+                message=exc.detail,
+                error=exc.error_type,
+                request_id=request_id,
+            ).model_dump(),
+            headers=exc.headers,
+        )

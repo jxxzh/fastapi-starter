@@ -1,10 +1,10 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.handlers import api_exception_handler, general_exception_handler
+from app.api.handlers import general_exception_handler
 from app.api.main import api_router
 from app.api.middlewares import LoggingMiddleware, RequestIDMiddleware
-from app.api.schemas.error import APIError
 from app.core.config import settings
 from app.core.logger import setup_logger
 
@@ -33,7 +33,7 @@ app.add_middleware(RequestIDMiddleware)
 
 
 # 添加异常处理器
-app.add_exception_handler(APIError, api_exception_handler)
+app.add_exception_handler(RequestValidationError, general_exception_handler)
 app.add_exception_handler(Exception, general_exception_handler)
 
 

@@ -61,7 +61,7 @@ def _build_response_log_payload(response: Response) -> dict[str, Any]:
     }
 
     body = getattr(response, "body", None)
-    if isinstance(body, (bytes, bytearray)):
+    if isinstance(body, bytes | bytearray):
         if settings.LOG_RESPONSE_BODY and _should_log_body(
             content_type=content_type,
             content_length=payload["content_length"],
