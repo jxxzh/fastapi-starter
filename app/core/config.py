@@ -55,23 +55,31 @@ class Settings(BaseSettings):
         ]
 
     # sqlalchemy
-    MYSQL_SERVER: str
-    MYSQL_PORT: int
-    MYSQL_USER: str
-    MYSQL_PASSWORD: str
-    MYSQL_DB: str
+    DB_SCHEME: str = "mysql+pymysql"
+    DB_SERVER: str
+    DB_PORT: int = 3306
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_NAME: str
 
     @computed_field  # type: ignore[prop-decorator]
     @property
-    def SQLALCHEMY_DATABASE_URI(self) -> MySQLDsn:
-        return MySQLDsn.build(
-            scheme="mysql+pymysql",
-            username=self.MYSQL_USER,
-            password=self.MYSQL_PASSWORD,
-            host=self.MYSQL_SERVER,
-            port=self.MYSQL_PORT,
-            path=self.MYSQL_DB,
-        )
+    def SQLALCHEMY_DATABASE_URI(self) -> str:
+        # 如果 scheme 包含 "mysql"，使用 MySQLDsn 构建以保证验证正确
+        if "mysql" in self.DB_SCHEME:
+            return str(
+                MySQLDsn.build(
+                    scheme=self.DB_SCHEME,
+                    username=self.DB_USER,
+                    password=self.DB_PASSWORD,
+                    host=self.DB_SERVER,
+                    port=self.DB_PORT,
+                    path=self.DB_NAME,
+                )
+            )
+        # 对于 PostgreSQL, 可以使用 PostgresDsn.build
+        # 否则尝试通用构建，或者直接返回拼接后的字符串
+        return f"{self.DB_SCHEME}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_SERVER}:{self.DB_PORT}/{self.DB_NAME}"
 
     # db default user
     FIRST_SUPERUSER: str
@@ -92,7 +100,7 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> "Settings":
         self._check_default_secret("SECRET_KEY", self.SECRET_KEY)
-        self._check_default_secret("MYSQL_PASSWORD", self.MYSQL_PASSWORD)
+        self._check_default_secret("DB_PASSWORD", self.DB_PASSWORD)
         self._check_default_secret(
             "FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD
         )
