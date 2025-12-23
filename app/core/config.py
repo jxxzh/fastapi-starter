@@ -8,6 +8,7 @@ from pydantic import (
     BeforeValidator,
     MySQLDsn,
     computed_field,
+    model_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -55,7 +56,7 @@ class Settings(BaseSettings):
 
     # sqlalchemy
     MYSQL_SERVER: str
-    MYSQL_PORT: int = 3306
+    MYSQL_PORT: int
     MYSQL_USER: str
     MYSQL_PASSWORD: str
     MYSQL_DB: str
@@ -75,6 +76,28 @@ class Settings(BaseSettings):
     # db default user
     FIRST_SUPERUSER: str
     FIRST_SUPERUSER_PASSWORD: str
+
+    # 有些配置(如密码)必须非默认值，否则抛出异常
+    def _check_default_secret(self, var_name: str, value: str | None) -> None:
+        if value == "changethis":
+            message = (
+                f'The value of {var_name} is "changethis", '
+                "for security, please change it, at least for deployments."
+            )
+            if self.APP_ENV == "development":
+                logger.warning(message)
+            else:
+                raise ValueError(message)
+
+    @model_validator(mode="after")
+    def _enforce_non_default_secrets(self) -> "Settings":
+        self._check_default_secret("SECRET_KEY", self.SECRET_KEY)
+        self._check_default_secret("MYSQL_PASSWORD", self.MYSQL_PASSWORD)
+        self._check_default_secret(
+            "FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD
+        )
+
+        return self
 
     model_config = SettingsConfigDict(env_file_encoding="utf-8")
 
