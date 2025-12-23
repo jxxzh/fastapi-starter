@@ -4,8 +4,6 @@ from http import HTTPStatus
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
-from app.api.schemas.response import APIResponseModel
-
 
 class APIErrorType(Enum):
     """
@@ -57,6 +55,8 @@ class APIExceptionResponse(JSONResponse):
         exc: APIException,
         request_id: str,
     ):
+        from app.api.schemas.response import APIResponseModel
+
         super().__init__(
             status_code=exc.status_code,
             content=APIResponseModel[None](
