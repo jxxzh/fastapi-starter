@@ -17,4 +17,5 @@ class APIResponseModel(BaseModel, Generic[T]):
     error: APIErrorType | None = Field(
         default=None, description="错误类型枚举值，仅在失败时返回"
     )
-    request_id: str = Field(..., description="请求的唯一标识符，用于链路追踪")
+    # 已经在请求头中返回了，这里不再返回 request_id
+    # request_id: str = Field(..., description="请求的唯一标识符，用于链路追踪")

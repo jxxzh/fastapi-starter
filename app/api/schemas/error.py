@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
 
-class APIErrorType(Enum):
+class APIErrorType(str, Enum):
     """
     错误类型枚举
     用于规范化和标准化错误类型
@@ -53,7 +53,6 @@ class APIExceptionResponse(JSONResponse):
     def __init__(
         self,
         exc: APIException,
-        request_id: str,
     ):
         from app.api.schemas.response import APIResponseModel
 
@@ -63,7 +62,6 @@ class APIExceptionResponse(JSONResponse):
                 data=None,
                 message=exc.detail,
                 error=exc.error_type,
-                request_id=request_id,
             ).model_dump(),
             headers=exc.headers,
         )

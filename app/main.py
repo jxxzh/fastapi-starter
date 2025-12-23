@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,7 +10,6 @@ from app.core.logger import setup_logger
 
 # 初始化日志配置
 setup_logger()
-
 
 app = FastAPI(
     # 生产环境不暴露 OpenAPI 接口
@@ -38,6 +37,7 @@ app.add_middleware(RequestIDMiddleware)
 
 # 添加异常处理器
 app.add_exception_handler(RequestValidationError, general_exception_handler)
+app.add_exception_handler(HTTPException, general_exception_handler)
 app.add_exception_handler(Exception, general_exception_handler)
 
 

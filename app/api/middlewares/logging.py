@@ -82,7 +82,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
-        request_id = getattr(request.state, "request_id", "N/A")
         start_time = time.perf_counter()
 
         request_payload = _build_request_log_payload(request)
@@ -116,7 +115,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         response_payload = _build_response_log_payload(response)
 
         logger.bind(
-            req_id=request_id,
             req=request_payload,
             resp=response_payload,
         ).info(
