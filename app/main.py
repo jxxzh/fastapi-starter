@@ -12,7 +12,11 @@ from app.core.logger import setup_logger
 setup_logger()
 
 
-app = FastAPI()
+app = FastAPI(
+    # 生产环境不暴露 OpenAPI 接口
+    openapi_url=None if settings.APP_ENV == "production" else "/openapi.json",
+)
+
 
 # 添加中间件 - 注意顺序很重要！
 # cors中间件

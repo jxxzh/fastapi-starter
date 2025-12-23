@@ -22,8 +22,8 @@ def parse_cors(v: Any) -> list[str] | str:
 
 class Settings(BaseSettings):
     # Basic
-    APP_ENV: Literal["development", "production", "testing"] = "development"
     APP_NAME: str = "FastAPI Starter"
+    APP_ENV: Literal["development", "production", "testing"] = "development"
 
     API_V1_STR: str = "/api/v1"
 
@@ -75,6 +75,7 @@ class Settings(BaseSettings):
     # db default user
     FIRST_SUPERUSER: str
     FIRST_SUPERUSER_PASSWORD: str
+
     model_config = SettingsConfigDict(env_file_encoding="utf-8")
 
     def __init__(self, **kwargs):
