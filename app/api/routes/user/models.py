@@ -13,7 +13,8 @@ class UserBase(SQLModel):
 
 
 # 数据库模型，表名对应类名
-class User(BaseUUIDModel, SoftDeleteModel, UserBase, table=True):
+# 最先继承的模型的字段在数据库表的DDL中在最后面
+class User(UserBase, SoftDeleteModel, BaseUUIDModel, table=True):
     __table_args__ = (
         UniqueConstraint("email", "deleted_at", name="uk_user_email_deleted_at"),
     )
