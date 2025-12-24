@@ -13,7 +13,7 @@ setup_logger()
 
 app = FastAPI(
     # 生产环境不暴露 OpenAPI 接口
-    openapi_url=None if settings.APP_ENV == "production" else "/openapi.json",
+    openapi_url=None if settings.ENV == "production" else "/openapi.json",
 )
 
 

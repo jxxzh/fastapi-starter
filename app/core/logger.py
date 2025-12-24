@@ -46,7 +46,7 @@ def setup_logger() -> None:
     # 保存日志到本地文件
     if settings.LOG_SAVE_IN_LOCAL_FILE:
         logger.add(
-            f"logs/{settings.APP_ENV}.log",
+            f"logs/{settings.ENV}.log",
             serialize=True,
             rotation="10 MB",
             retention="7 days",

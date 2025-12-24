@@ -1,43 +1,51 @@
 # Project Context
 
 ## Purpose
-- FastAPI 项目
+- FastAPI + SQLModel 项目
 - 保持代码简洁、可演进，适合作为中小型后端或 API 服务的起点
 
 ## Tech Stack
 
 ### 核心框架
 - **FastAPI**: 现代、快速的 Web 框架，用于构建高性能 API
-- **Uvicorn**: ASGI 服务器，支持异步操作
 - **Pydantic V2**: 数据验证和设置管理，使用 Python 类型提示
+- **SQLModel**: 数据库 ORM，使用 Python 类型提示
+- **Alembic**: 数据库迁移工具
 
 ### 开发工具
 - **UV**: 现代 Python 包管理工具
 - **Ruff**: 代码检查和格式化工具
+- **Mypy**: 静态类型检查工具
+- **Loguru**: 日志记录工具
+- **Pytest**: 单元测试框架
 
 ## Project Conventions
 
 ### Code Style
-- 偏好函数式/声明式风格，避免不必要的类；函数签名必须完整类型标注
-- Ruff 负责 lint/format
-- 公共导出在 `__init__.py` 使用 `__all__`，减少未使用导出警告
+- 偏好函数式/声明式风格，避免不必要的类
+- 函数签名必须完整类型标注
 - 路由与服务优先使用 `async def`，Pydantic 模型用于输入/输出校验
 
 ### Architecture Patterns
 
 #### 项目结构
 ```
-server/
-├── core/              # 核心基础设施
-│   ├── config.py      # 配置管理（Pydantic Settings）
-│   ├── logger.py      # 日志配置
-│   ├── handlers/      # 异常处理器
-│   ├── middlewares/   # 中间件（request_id, logging 等）
-│   ├── decorators/    # 装饰器（response_wrapper 等）
-│   └── schemas/       # 共享的数据模型
-├── modules/           # 业务模块
-│   └── {module_name}/ # 每个模块包含 router, schema, service 等
-└── main.py            # 应用入口
+├── app/                       # 主应用目录
+│   ├── core/                  # 核心基础设施
+│   │   ├── config.py          # 配置管理（Pydantic Settings）
+│   │   ├── logger.py          # 日志配置 (Loguru)
+│   │   ├── db.py              # 数据库配置 (SQLModel)
+│   │   └── models.py          # SQLModel 模型注册入口（用于 Alembic autogenerate）
+│   ├── api/                   # API 路由
+│   │   ├── routes/            # 路由（按功能组织，每个模块包含 router, schema, service 等）
+│   │   └── main.py            # API 路由入口
+│   └── main.py                # 主应用入口
+├── scripts/                   # 脚本目录
+├── alembic/                   # Alembic 迁移目录
+├── pyproject.toml             # 项目元数据和依赖
+├── .env(.development,.production,.testing)           # 环境变量
+├── AGENTS.md                  # AI 编码代理指南
+└── README.md                  # 项目说明文档
 ```
 
 #### 设计原则
@@ -51,7 +59,7 @@ server/
 - 所有操作都有相应的日志记录
 
 ### Testing Strategy
-- 当前项目未附带自动化测试
+- 已提供集成测试基线：使用 `uv run test` 运行，默认复用真实 MySQL 并连接固定独立测试库（`DB_NAME` 包含 `_test`），表结构通过 Alembic 迁移到 head 初始化。
 
 ### Git Workflow
 - 提交信息尽量语义化（feat/fix/chore 等），与变更内容一致
@@ -61,9 +69,9 @@ server/
 
 ## Important Constraints
 - 必须使用 uv 进行依赖与脚本管理；仅在有充分理由时新增依赖
-- 全局异步路由；保持高性能与可观测性（健康检查、结构化日志）
+- 全局异步路由；保持高性能与可观测性
 - 代码应保持简洁与可读性，避免过度抽象
 
 ## External Dependencies
-- 目前无外部服务集成；仅使用开源库（FastAPI、Pydantic、Uvicorn、Loguru）
-- 如接入外部 API/DB/队列，请在此登记用途、认证方式和故障策略
+- Database: SQLModel + Alembic + MySQL
+- Testing: pytest + httpx + pytest-asyncio + pytest-cov

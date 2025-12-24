@@ -12,7 +12,7 @@ dependencies = [
     "sqlmodel>=0.0.27",
     "pyjwt>=2.10.1",
     "alembic>=1.17.2",
-    "pymysql>=1.1.2",
+    "pymysql[rsa]>=1.1.2",
     "pwdlib[argon2]>=0.3.0",
 ]
 
@@ -23,6 +23,7 @@ migrate-dev = "scripts.commands:migrate_dev"
 migrate-prod = "scripts.commands:migrate_prod"
 make-migrations = "scripts.commands:make_migrations"
 lint = "scripts.commands:lint"
+test = "scripts.commands:test"
 
 [tool.setuptools.packages.find]
 include = ["app*", "scripts*"]
@@ -33,6 +34,12 @@ dev = [
     "mypy>=1.19.1",
     "ruff>=0.14.3",
     "types-pymysql>=1.1.0.20251220",
+]
+test = [
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.2.0",
+    "httpx>=0.28.1",
+    "pytest-cov>=6.3.0",
 ]
 
 [tool.uv]
@@ -70,3 +77,20 @@ keep-runtime-typing = true
 
 [tool.ruff.format]
 quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = [
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

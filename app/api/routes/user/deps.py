@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from typing import Annotated
+from uuid import UUID
 
 import jwt
 from fastapi import Depends
@@ -25,7 +26,7 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
             detail="Could not validate credentials",
         )
 
-    user = session.get(User, token_data.sub)
+    user = session.get(User, UUID(token_data.sub))  # 显式将 sub 转换为 UUID
     if not user:
         raise APIException(status_code=HTTPStatus.NOT_FOUND, detail="User not found")
     if not user.is_active:

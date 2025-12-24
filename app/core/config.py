@@ -22,10 +22,9 @@ def parse_cors(v: Any) -> list[str] | str:
 
 
 class Settings(BaseSettings):
+    ENV: Literal["development", "production", "testing"] = "development"
     # Basic
     APP_NAME: str = "FastAPI Starter"
-    APP_ENV: Literal["development", "production", "testing"] = "development"
-
     API_V1_STR: str = "/api/v1"
 
     # logging
@@ -92,7 +91,7 @@ class Settings(BaseSettings):
                 f'The value of {var_name} is "changethis", '
                 "for security, please change it, at least for deployments."
             )
-            if self.APP_ENV == "development":
+            if self.ENV == "development":
                 logger.warning(message)
             else:
                 raise ValueError(message)
@@ -112,7 +111,9 @@ class Settings(BaseSettings):
     def __init__(self, **kwargs):
         # 动态选择 .env 文件
         env = os.getenv("ENV", "development")
-        env_candidates = [".env", f".env.{env}", ".env.local"]
+
+        # 加载顺序：基础文件在前，环境特定文件在后，local 文件更后（后者覆盖前者）
+        env_candidates = [".env", f".env.{env}", ".env.local", f".env.{env}.local"]
         env_files = [path for path in env_candidates if os.path.exists(path)]
 
         # 如果找到了 .env 文件，通过 _env_file 参数传递
